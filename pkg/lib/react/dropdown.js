@@ -1,3 +1,4 @@
+var babelHelpers = require('./babel-helpers.js');
 /**
  * MUI React dropdowns module
  * @module react/dropdowns

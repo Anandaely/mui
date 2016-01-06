@@ -31,18 +31,20 @@ babelify = babelify.configure({
 })
 
 
-var babelHelpersJS = babelCore.buildExternalHelpers(
-  [
-    'inherits',
-    'createClass',
-    'classCallCheck',
-    'possibleConstructorReturn',
-    'interopRequireDefault',
-    'interopRequireWildcard',
-    'extends'
-  ],
-  'global'
-);
+var babelHelpersList = [
+  'inherits',
+  'createClass',
+  'classCallCheck',
+  'possibleConstructorReturn',
+  'interopRequireDefault',
+  'interopRequireWildcard',
+  'extends'
+];
+
+var babelHelpersJS = babelCore.buildExternalHelpers(babelHelpersList,
+                                                    'global');
+
+
 
 
 
@@ -292,9 +294,18 @@ gulp.task('pkg-js', ['clean'], function() {
 
 
 gulp.task('pkg-react', ['clean'], function() {
+  var s = "var babelHelpers = require('./babel-helpers.js');\n";
+
   return gulp.src('src/react/**/*.jsx')
     .pipe(babel({plugins: ['external-helpers-2']}))
-    .pipe(gulp.dest(dirName + '/react'));  
+    .pipe(injectString.prepend(s))
+    .pipe(gulp.dest(dirName + '/react'));
+});
+
+
+gulp.task('pkg-babel-helpers', ['pkg-react'], function() {
+  var s = babelCore.buildExternalHelpers(babelHelpersList, 'umd');
+  fs.writeFileSync(dirName + '/react/babel-helpers.js', s);
 });
 
 
@@ -357,7 +368,8 @@ gulp.task('build-examples', ['clean'], function() {
 gulp.task('build-pkg', ['clean'], function() {
   gulp.start([
     'pkg-js',
-    'pkg-react'
+    'pkg-react',
+    'pkg-babel-helpers'
   ]);
 });
 

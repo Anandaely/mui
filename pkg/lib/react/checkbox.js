@@ -1,3 +1,4 @@
+var babelHelpers = require('./babel-helpers.js');
 /**
  * MUI React checkbox module
  * @module react/checkbox

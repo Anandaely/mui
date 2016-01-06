@@ -1,3 +1,4 @@
+var babelHelpers = require('./babel-helpers.js');
 /**
  * MUI React button module
  * @module react/button

@@ -1,3 +1,4 @@
+var babelHelpers = require('./babel-helpers.js');
 /**
  * MUI React divider module
  * @module react/divider

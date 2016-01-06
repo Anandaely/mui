@@ -1,3 +1,4 @@
+var babelHelpers = require('./babel-helpers.js');
 /**
  * MUI React select module
  * @module react/select
