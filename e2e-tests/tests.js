@@ -1683,15 +1683,11 @@ module.exports = focusNode;
  * Same as document.activeElement but wraps in a try-catch block. In IE it is
  * not safe to call document.activeElement if there is nothing focused.
  *
- * The activeElement will be null only if the document or document body is not yet defined.
+ * The activeElement will be null only if the document body is not yet defined.
  */
-'use strict';
+"use strict";
 
 function getActiveElement() /*?DOMElement*/{
-  if (typeof document === 'undefined') {
-    return null;
-  }
-
   try {
     return document.activeElement || document.body;
   } catch (e) {
@@ -1937,7 +1933,7 @@ module.exports = hyphenateStyleName;
  * will remain to ensure logic does not differ in production.
  */
 
-var invariant = function (condition, format, a, b, c, d, e, f) {
+function invariant(condition, format, a, b, c, d, e, f) {
   if (process.env.NODE_ENV !== 'production') {
     if (format === undefined) {
       throw new Error('invariant requires an error message argument');
@@ -1951,15 +1947,16 @@ var invariant = function (condition, format, a, b, c, d, e, f) {
     } else {
       var args = [a, b, c, d, e, f];
       var argIndex = 0;
-      error = new Error('Invariant Violation: ' + format.replace(/%s/g, function () {
+      error = new Error(format.replace(/%s/g, function () {
         return args[argIndex++];
       }));
+      error.name = 'Invariant Violation';
     }
 
     error.framesToPop = 1; // we don't care about invariant's own frame
     throw error;
   }
-};
+}
 
 module.exports = invariant;
 }).call(this,require("jMEGLQ"))
@@ -2224,18 +2221,23 @@ module.exports = performance || {};
 'use strict';
 
 var performance = require('./performance');
-var curPerformance = performance;
+
+var performanceNow;
 
 /**
  * Detect if we can use `window.performance.now()` and gracefully fallback to
  * `Date.now()` if it doesn't exist. We need to support Firefox < 15 for now
  * because of Facebook's testing infrastructure.
  */
-if (!curPerformance || !curPerformance.now) {
-  curPerformance = Date;
+if (performance.now) {
+  performanceNow = function () {
+    return performance.now();
+  };
+} else {
+  performanceNow = function () {
+    return Date.now();
+  };
 }
-
-var performanceNow = curPerformance.now.bind(curPerformance);
 
 module.exports = performanceNow;
 },{"./performance":29}],31:[function(require,module,exports){
@@ -5737,8 +5739,8 @@ var HTMLDOMPropertyConfig = {
      */
     // autoCapitalize and autoCorrect are supported in Mobile Safari for
     // keyboard hints.
-    autoCapitalize: null,
-    autoCorrect: null,
+    autoCapitalize: MUST_USE_ATTRIBUTE,
+    autoCorrect: MUST_USE_ATTRIBUTE,
     // autoSave allows WebKit/Blink to persist values of input fields on page reloads
     autoSave: null,
     // color is for Safari mask-icon link
@@ -5769,9 +5771,7 @@ var HTMLDOMPropertyConfig = {
     httpEquiv: 'http-equiv'
   },
   DOMPropertyNames: {
-    autoCapitalize: 'autocapitalize',
     autoComplete: 'autocomplete',
-    autoCorrect: 'autocorrect',
     autoFocus: 'autofocus',
     autoPlay: 'autoplay',
     autoSave: 'autosave',
@@ -10214,7 +10214,7 @@ function updateOptionsIfPendingUpdateAndMounted() {
     var value = LinkedValueUtils.getValue(props);
 
     if (value != null) {
-      updateOptions(this, props, value);
+      updateOptions(this, Boolean(props.multiple), value);
     }
   }
 }
@@ -11293,7 +11293,9 @@ var DOM_OPERATION_TYPES = {
   'setValueForProperty': 'update attribute',
   'setValueForAttribute': 'update attribute',
   'deleteValueForProperty': 'remove attribute',
-  'dangerouslyReplaceNodeWithMarkupByID': 'replace'
+  'setValueForStyles': 'update styles',
+  'replaceNodeWithMarkup': 'replace',
+  'updateTextContent': 'set textContent'
 };
 
 function getTotalTime(measurements) {
@@ -16817,7 +16819,7 @@ module.exports = ReactUpdates;
 
 'use strict';
 
-module.exports = '0.14.3';
+module.exports = '0.14.5';
 },{}],121:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
@@ -21435,6 +21437,8 @@ module.exports = {
 
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -21442,7 +21446,15 @@ exports.Appbar = undefined;
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
  * Appbar constructor
@@ -21450,14 +21462,15 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
  */
 
 var Appbar = (function (_React$Component) {
-  babelHelpers.inherits(Appbar, _React$Component);
+  _inherits(Appbar, _React$Component);
 
   function Appbar() {
-    babelHelpers.classCallCheck(this, Appbar);
-    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Appbar).apply(this, arguments));
+    _classCallCheck(this, Appbar);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Appbar).apply(this, arguments));
   }
 
-  babelHelpers.createClass(Appbar, [{
+  _createClass(Appbar, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -21467,6 +21480,7 @@ var Appbar = (function (_React$Component) {
       );
     }
   }]);
+
   return Appbar;
 })(_react2.default.Component);
 
@@ -21482,6 +21496,8 @@ exports.Appbar = Appbar;
 
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -21489,15 +21505,25 @@ exports.Button = undefined;
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _jqLite = require('../js/lib/jqLite');
 
-var jqLite = babelHelpers.interopRequireWildcard(_jqLite);
+var jqLite = _interopRequireWildcard(_jqLite);
 
 var _util = require('../js/lib/util');
 
-var util = babelHelpers.interopRequireWildcard(_util);
+var util = _interopRequireWildcard(_util);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var rippleIter = 0;
 
@@ -21512,25 +21538,25 @@ var PropTypes = _react2.default.PropTypes,
  */
 
 var Button = (function (_React$Component) {
-  babelHelpers.inherits(Button, _React$Component);
+  _inherits(Button, _React$Component);
 
   function Button() {
     var _Object$getPrototypeO;
 
     var _temp, _this, _ret;
 
-    babelHelpers.classCallCheck(this, Button);
+    _classCallCheck(this, Button);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = babelHelpers.possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Button)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(Button)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.state = {
       ripples: {}
-    }, _temp), babelHelpers.possibleConstructorReturn(_this, _ret);
+    }, _temp), _possibleConstructorReturn(_this, _ret);
   }
 
-  babelHelpers.createClass(Button, [{
+  _createClass(Button, [{
     key: 'onClick',
     value: function onClick(ev) {
       var onClickFn = this.props.onClick;
@@ -21609,6 +21635,7 @@ var Button = (function (_React$Component) {
       );
     }
   }]);
+
   return Button;
 })(_react2.default.Component);
 
@@ -21633,14 +21660,15 @@ Button.defaultProps = {
 };
 
 var Ripple = (function (_React$Component2) {
-  babelHelpers.inherits(Ripple, _React$Component2);
+  _inherits(Ripple, _React$Component2);
 
   function Ripple() {
-    babelHelpers.classCallCheck(this, Ripple);
-    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Ripple).apply(this, arguments));
+    _classCallCheck(this, Ripple);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Ripple).apply(this, arguments));
   }
 
-  babelHelpers.createClass(Ripple, [{
+  _createClass(Ripple, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
       var _this3 = this;
@@ -21667,6 +21695,7 @@ var Ripple = (function (_React$Component2) {
       return _react2.default.createElement('div', { className: rippleClass, style: style });
     }
   }]);
+
   return Ripple;
 })(_react2.default.Component);
 
@@ -21694,6 +21723,8 @@ exports.Button = Button;
 
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -21701,7 +21732,15 @@ exports.Caret = undefined;
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
  * Caret constructor
@@ -21709,19 +21748,21 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
  */
 
 var Caret = (function (_React$Component) {
-  babelHelpers.inherits(Caret, _React$Component);
+  _inherits(Caret, _React$Component);
 
   function Caret() {
-    babelHelpers.classCallCheck(this, Caret);
-    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Caret).apply(this, arguments));
+    _classCallCheck(this, Caret);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Caret).apply(this, arguments));
   }
 
-  babelHelpers.createClass(Caret, [{
+  _createClass(Caret, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement('span', { className: 'mui-caret' });
     }
   }]);
+
   return Caret;
 })(_react2.default.Component);
 
@@ -21737,6 +21778,8 @@ exports.Caret = Caret;
 
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -21744,7 +21787,15 @@ exports.Checkbox = undefined;
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var PropTypes = _react2.default.PropTypes;
 
@@ -21754,14 +21805,15 @@ var PropTypes = _react2.default.PropTypes;
  */
 
 var Checkbox = (function (_React$Component) {
-  babelHelpers.inherits(Checkbox, _React$Component);
+  _inherits(Checkbox, _React$Component);
 
   function Checkbox() {
-    babelHelpers.classCallCheck(this, Checkbox);
-    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Checkbox).apply(this, arguments));
+    _classCallCheck(this, Checkbox);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Checkbox).apply(this, arguments));
   }
 
-  babelHelpers.createClass(Checkbox, [{
+  _createClass(Checkbox, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -21780,6 +21832,7 @@ var Checkbox = (function (_React$Component) {
       );
     }
   }]);
+
   return Checkbox;
 })(_react2.default.Component);
 
@@ -21805,6 +21858,8 @@ exports.Checkbox = Checkbox;
 
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -21812,7 +21867,15 @@ exports.Container = undefined;
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
  * Container constructor
@@ -21820,14 +21883,15 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
  */
 
 var Container = (function (_React$Component) {
-  babelHelpers.inherits(Container, _React$Component);
+  _inherits(Container, _React$Component);
 
   function Container() {
-    babelHelpers.classCallCheck(this, Container);
-    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Container).apply(this, arguments));
+    _classCallCheck(this, Container);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Container).apply(this, arguments));
   }
 
-  babelHelpers.createClass(Container, [{
+  _createClass(Container, [{
     key: 'render',
     value: function render() {
       var cls = 'mui-container';
@@ -21842,6 +21906,7 @@ var Container = (function (_React$Component) {
       );
     }
   }]);
+
   return Container;
 })(_react2.default.Component);
 
@@ -21863,6 +21928,8 @@ exports.Container = Container;
 
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -21870,7 +21937,15 @@ exports.Divider = undefined;
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
  * Divider constructor
@@ -21878,19 +21953,21 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
  */
 
 var Divider = (function (_React$Component) {
-  babelHelpers.inherits(Divider, _React$Component);
+  _inherits(Divider, _React$Component);
 
   function Divider() {
-    babelHelpers.classCallCheck(this, Divider);
-    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Divider).apply(this, arguments));
+    _classCallCheck(this, Divider);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Divider).apply(this, arguments));
   }
 
-  babelHelpers.createClass(Divider, [{
+  _createClass(Divider, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement('div', { className: 'mui-divider' });
     }
   }]);
+
   return Divider;
 })(_react2.default.Component);
 
@@ -21908,6 +21985,8 @@ exports.Divider = Divider;
 
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -21915,7 +21994,7 @@ exports.DropdownItem = exports.Dropdown = undefined;
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _button = require('./button.jsx');
 
@@ -21923,11 +22002,21 @@ var _caret = require('./caret.jsx');
 
 var _jqLite = require('../js/lib/jqLite');
 
-var jqLite = babelHelpers.interopRequireWildcard(_jqLite);
+var jqLite = _interopRequireWildcard(_jqLite);
 
 var _util = require('../js/lib/util');
 
-var util = babelHelpers.interopRequireWildcard(_util);
+var util = _interopRequireWildcard(_util);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var PropTypes = _react2.default.PropTypes,
     dropdownClass = 'mui-dropdown',
@@ -21941,12 +22030,12 @@ var PropTypes = _react2.default.PropTypes,
  */
 
 var Dropdown = (function (_React$Component) {
-  babelHelpers.inherits(Dropdown, _React$Component);
+  _inherits(Dropdown, _React$Component);
 
   function Dropdown(props) {
-    babelHelpers.classCallCheck(this, Dropdown);
+    _classCallCheck(this, Dropdown);
 
-    var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Dropdown).call(this, props));
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Dropdown).call(this, props));
 
     _this.state = {
       opened: false,
@@ -21959,7 +22048,7 @@ var Dropdown = (function (_React$Component) {
     return _this;
   }
 
-  babelHelpers.createClass(Dropdown, [{
+  _createClass(Dropdown, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
       document.addEventListener('click', this.onOutsideClickCB);
@@ -22068,6 +22157,7 @@ var Dropdown = (function (_React$Component) {
       );
     }
   }]);
+
   return Dropdown;
 })(_react2.default.Component);
 
@@ -22096,18 +22186,18 @@ Dropdown.defaultProps = {
 };
 
 var DropdownItem = (function (_React$Component2) {
-  babelHelpers.inherits(DropdownItem, _React$Component2);
+  _inherits(DropdownItem, _React$Component2);
 
   function DropdownItem(props) {
-    babelHelpers.classCallCheck(this, DropdownItem);
+    _classCallCheck(this, DropdownItem);
 
-    var _this2 = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(DropdownItem).call(this, props));
+    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(DropdownItem).call(this, props));
 
     _this2.onClickCB = util.callback(_this2, 'onClick');
     return _this2;
   }
 
-  babelHelpers.createClass(DropdownItem, [{
+  _createClass(DropdownItem, [{
     key: 'onClick',
     value: function onClick(ev) {
       if (this.props.onClick) this.props.onClick(this, ev);
@@ -22126,6 +22216,7 @@ var DropdownItem = (function (_React$Component2) {
       );
     }
   }]);
+
   return DropdownItem;
 })(_react2.default.Component);
 
@@ -22150,6 +22241,8 @@ exports.DropdownItem = DropdownItem;
 
 'use strict';
 
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -22157,7 +22250,15 @@ exports.Panel = undefined;
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 /**
  * Panel constructor
@@ -22165,14 +22266,15 @@ var _react2 = babelHelpers.interopRequireDefault(_react);
  */
 
 var Panel = (function (_React$Component) {
-  babelHelpers.inherits(Panel, _React$Component);
+  _inherits(Panel, _React$Component);
 
   function Panel() {
-    babelHelpers.classCallCheck(this, Panel);
-    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Panel).apply(this, arguments));
+    _classCallCheck(this, Panel);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(Panel).apply(this, arguments));
   }
 
-  babelHelpers.createClass(Panel, [{
+  _createClass(Panel, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -22182,6 +22284,7 @@ var Panel = (function (_React$Component) {
       );
     }
   }]);
+
   return Panel;
 })(_react2.default.Component);
 
@@ -22476,15 +22579,17 @@ function getShallowRendererOutput(reactElem) {
 
 var _assert = require('assert');
 
-var _assert2 = babelHelpers.interopRequireDefault(_assert);
+var _assert2 = _interopRequireDefault(_assert);
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _appbar = require('../../src/react/appbar.jsx');
 
 var _reactHelpers = require('../lib/react-helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * MUI test react appbar library
@@ -22510,23 +22615,25 @@ describe('react/appbar', function () {
 
 var _assert = require('assert');
 
-var _assert2 = babelHelpers.interopRequireDefault(_assert);
+var _assert2 = _interopRequireDefault(_assert);
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _reactAddonsTestUtils = require('react-addons-test-utils');
 
-var _reactAddonsTestUtils2 = babelHelpers.interopRequireDefault(_reactAddonsTestUtils);
+var _reactAddonsTestUtils2 = _interopRequireDefault(_reactAddonsTestUtils);
 
 var _reactDom = require('react-dom');
 
-var _reactDom2 = babelHelpers.interopRequireDefault(_reactDom);
+var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _button = require('../../src/react/button.jsx');
 
 var _reactHelpers = require('../lib/react-helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * MUI test react appbar library
@@ -22643,15 +22750,17 @@ describe('react/button', function () {
 
 var _assert = require('assert');
 
-var _assert2 = babelHelpers.interopRequireDefault(_assert);
+var _assert2 = _interopRequireDefault(_assert);
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _caret = require('../../src/react/caret.jsx');
 
 var _reactHelpers = require('../lib/react-helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * MUI test react caret library
@@ -22677,30 +22786,32 @@ describe('react/caret', function () {
 
 var _assert = require('assert');
 
-var _assert2 = babelHelpers.interopRequireDefault(_assert);
+var _assert2 = _interopRequireDefault(_assert);
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _reactDom = require('react-dom');
 
-var _reactDom2 = babelHelpers.interopRequireDefault(_reactDom);
+var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _reactAddonsTestUtils = require('react-addons-test-utils');
 
-var _reactAddonsTestUtils2 = babelHelpers.interopRequireDefault(_reactAddonsTestUtils);
+var _reactAddonsTestUtils2 = _interopRequireDefault(_reactAddonsTestUtils);
 
 var _checkbox = require('../../src/react/checkbox.jsx');
 
 var _reactHelpers = require('../lib/react-helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * MUI test react checkbox library
  * @module test/react-tests/test-checkbox
  */
 
-describe('react/forms/checkbox', function () {
+describe('react/checkbox', function () {
   var elem = undefined;
 
   beforeEach(function () {
@@ -22737,15 +22848,17 @@ describe('react/forms/checkbox', function () {
 
 var _assert = require('assert');
 
-var _assert2 = babelHelpers.interopRequireDefault(_assert);
+var _assert2 = _interopRequireDefault(_assert);
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _container = require('../../src/react/container.jsx');
 
 var _reactHelpers = require('../lib/react-helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * MUI test react container library
@@ -22783,15 +22896,17 @@ describe('react/container', function () {
 
 var _assert = require('assert');
 
-var _assert2 = babelHelpers.interopRequireDefault(_assert);
+var _assert2 = _interopRequireDefault(_assert);
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _divider = require('../../src/react/divider.jsx');
 
 var _reactHelpers = require('../lib/react-helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * MUI test react divider library
@@ -22817,19 +22932,21 @@ describe('react/divider', function () {
 
 var _assert = require('assert');
 
-var _assert2 = babelHelpers.interopRequireDefault(_assert);
+var _assert2 = _interopRequireDefault(_assert);
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _reactAddonsTestUtils = require('react-addons-test-utils');
 
-var _reactAddonsTestUtils2 = babelHelpers.interopRequireDefault(_reactAddonsTestUtils);
+var _reactAddonsTestUtils2 = _interopRequireDefault(_reactAddonsTestUtils);
 
 var _dropdown = require('../../src/react/dropdown.jsx');
 
 var _reactHelpers = require('../lib/react-helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 describe('react/dropdown', function () {
   var elem = undefined;
@@ -22908,15 +23025,17 @@ describe('react/dropdown', function () {
 
 var _assert = require('assert');
 
-var _assert2 = babelHelpers.interopRequireDefault(_assert);
+var _assert2 = _interopRequireDefault(_assert);
 
 var _react = require('react');
 
-var _react2 = babelHelpers.interopRequireDefault(_react);
+var _react2 = _interopRequireDefault(_react);
 
 var _panel = require('../../src/react/panel.jsx');
 
 var _reactHelpers = require('../lib/react-helpers');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * MUI test react panel library
