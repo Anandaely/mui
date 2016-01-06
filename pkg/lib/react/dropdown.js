@@ -7,8 +7,6 @@
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -16,7 +14,7 @@ exports.DropdownItem = exports.Dropdown = undefined;
 
 var _react = require('react');
 
-var _react2 = _interopRequireDefault(_react);
+var _react2 = babelHelpers.interopRequireDefault(_react);
 
 var _button = require('./button.jsx');
 
@@ -24,21 +22,11 @@ var _caret = require('./caret.jsx');
 
 var _jqLite = require('../js/lib/jqLite');
 
-var jqLite = _interopRequireWildcard(_jqLite);
+var jqLite = babelHelpers.interopRequireWildcard(_jqLite);
 
 var _util = require('../js/lib/util');
 
-var util = _interopRequireWildcard(_util);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+var util = babelHelpers.interopRequireWildcard(_util);
 
 var PropTypes = _react2.default.PropTypes,
     dropdownClass = 'mui-dropdown',
@@ -52,12 +40,12 @@ var PropTypes = _react2.default.PropTypes,
  */
 
 var Dropdown = (function (_React$Component) {
-  _inherits(Dropdown, _React$Component);
+  babelHelpers.inherits(Dropdown, _React$Component);
 
   function Dropdown(props) {
-    _classCallCheck(this, Dropdown);
+    babelHelpers.classCallCheck(this, Dropdown);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Dropdown).call(this, props));
+    var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Dropdown).call(this, props));
 
     _this.state = {
       opened: false,
@@ -70,7 +58,7 @@ var Dropdown = (function (_React$Component) {
     return _this;
   }
 
-  _createClass(Dropdown, [{
+  babelHelpers.createClass(Dropdown, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
       document.addEventListener('click', this.onOutsideClickCB);
@@ -179,7 +167,6 @@ var Dropdown = (function (_React$Component) {
       );
     }
   }]);
-
   return Dropdown;
 })(_react2.default.Component);
 
@@ -208,18 +195,18 @@ Dropdown.defaultProps = {
 };
 
 var DropdownItem = (function (_React$Component2) {
-  _inherits(DropdownItem, _React$Component2);
+  babelHelpers.inherits(DropdownItem, _React$Component2);
 
   function DropdownItem(props) {
-    _classCallCheck(this, DropdownItem);
+    babelHelpers.classCallCheck(this, DropdownItem);
 
-    var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(DropdownItem).call(this, props));
+    var _this2 = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(DropdownItem).call(this, props));
 
     _this2.onClickCB = util.callback(_this2, 'onClick');
     return _this2;
   }
 
-  _createClass(DropdownItem, [{
+  babelHelpers.createClass(DropdownItem, [{
     key: 'onClick',
     value: function onClick(ev) {
       if (this.props.onClick) this.props.onClick(this, ev);
@@ -238,7 +225,6 @@ var DropdownItem = (function (_React$Component2) {
       );
     }
   }]);
-
   return DropdownItem;
 })(_react2.default.Component);
 

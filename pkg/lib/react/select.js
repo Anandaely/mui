@@ -5,8 +5,6 @@
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -14,29 +12,19 @@ exports.SelectItem = exports.Select = undefined;
 
 var _react = require('react');
 
-var _react2 = _interopRequireDefault(_react);
+var _react2 = babelHelpers.interopRequireDefault(_react);
 
 var _forms = require('../js/lib/forms');
 
-var formlib = _interopRequireWildcard(_forms);
+var formlib = babelHelpers.interopRequireWildcard(_forms);
 
 var _jqLite = require('../js/lib/jqLite');
 
-var jqLite = _interopRequireWildcard(_jqLite);
+var jqLite = babelHelpers.interopRequireWildcard(_jqLite);
 
 var _util = require('../js/lib/util');
 
-var util = _interopRequireWildcard(_util);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+var util = babelHelpers.interopRequireWildcard(_util);
 
 var PropTypes = _react2.default.PropTypes;
 
@@ -46,12 +34,12 @@ var PropTypes = _react2.default.PropTypes;
  */
 
 var Select = (function (_React$Component) {
-  _inherits(Select, _React$Component);
+  babelHelpers.inherits(Select, _React$Component);
 
   function Select(props) {
-    _classCallCheck(this, Select);
+    babelHelpers.classCallCheck(this, Select);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Select).call(this, props));
+    var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Select).call(this, props));
 
     _this.state = {
       showMenu: false
@@ -67,7 +55,7 @@ var Select = (function (_React$Component) {
     return _this;
   }
 
-  _createClass(Select, [{
+  babelHelpers.createClass(Select, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
       // make wrapper element focusable (to enable Firefox bugfix)
@@ -204,7 +192,6 @@ var Select = (function (_React$Component) {
       );
     }
   }]);
-
   return Select;
 })(_react2.default.Component);
 
@@ -233,15 +220,14 @@ Select.defaultProps = {
 };
 
 var SelectItem = (function (_React$Component2) {
-  _inherits(SelectItem, _React$Component2);
+  babelHelpers.inherits(SelectItem, _React$Component2);
 
   function SelectItem() {
-    _classCallCheck(this, SelectItem);
-
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(SelectItem).apply(this, arguments));
+    babelHelpers.classCallCheck(this, SelectItem);
+    return babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(SelectItem).apply(this, arguments));
   }
 
-  _createClass(SelectItem, [{
+  babelHelpers.createClass(SelectItem, [{
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
@@ -251,7 +237,6 @@ var SelectItem = (function (_React$Component2) {
       );
     }
   }]);
-
   return SelectItem;
 })(_react2.default.Component);
 
@@ -270,12 +255,12 @@ SelectItem.defaultProps = {
 };
 
 var Menu = (function (_React$Component3) {
-  _inherits(Menu, _React$Component3);
+  babelHelpers.inherits(Menu, _React$Component3);
 
   function Menu(props) {
-    _classCallCheck(this, Menu);
+    babelHelpers.classCallCheck(this, Menu);
 
-    var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Menu).call(this, props));
+    var _this3 = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Menu).call(this, props));
 
     _this3.state = {
       origIndex: null,
@@ -286,7 +271,7 @@ var Menu = (function (_React$Component3) {
     return _this3;
   }
 
-  _createClass(Menu, [{
+  babelHelpers.createClass(Menu, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
       var optionList = this.props.selectEl.children,
@@ -423,7 +408,6 @@ var Menu = (function (_React$Component3) {
       );
     }
   }]);
-
   return Menu;
 })(_react2.default.Component);
 

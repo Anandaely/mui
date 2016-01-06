@@ -293,7 +293,7 @@ gulp.task('pkg-js', ['clean'], function() {
 
 gulp.task('pkg-react', ['clean'], function() {
   return gulp.src('src/react/**/*.jsx')
-    .pipe(babel())
+    .pipe(babel({plugins: ['external-helpers-2']}))
     .pipe(gulp.dest(dirName + '/react'));  
 });
 
