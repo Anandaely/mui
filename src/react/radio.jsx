@@ -43,7 +43,7 @@ class Radio extends React.Component {
               defaultChecked={this.props.isChecked}
               disabled={this.props.isDisabled}
           />
-          { this.props.label }
+          {this.props.label}
         </label>
       </div>
     );

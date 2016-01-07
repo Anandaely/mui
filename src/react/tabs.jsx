@@ -78,7 +78,7 @@ class Tabs extends React.Component {
       tabEls.push(
         <li key={i} className={(isActive) ? isActiveClass : ''}>
           <a onClick={this.onClick.bind(this, i, item)}>
-            { item.props.label }
+            {item.props.label}
           </a>
         </li>
       );
@@ -89,7 +89,7 @@ class Tabs extends React.Component {
 
       paneEls.push(
         <div key={i} className={cls}>
-          { item.props.children }
+          {item.props.children}
         </div>
       );
     }
@@ -100,9 +100,9 @@ class Tabs extends React.Component {
     return (
       <div>
         <ul className={cls}>
-          { tabEls }
+          {tabEls}
         </ul>
-        { paneEls }
+        {paneEls}
       </div>
     );
   }

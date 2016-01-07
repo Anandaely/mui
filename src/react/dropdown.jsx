@@ -128,7 +128,7 @@ class Dropdown extends React.Component {
         size={this.props.size}
         isDisabled={this.props.isDisabled}
       >
-        { this.props.label }
+        {this.props.label}
         <Caret />
       </Button>
     );
@@ -148,15 +148,15 @@ class Dropdown extends React.Component {
           style={{top: this.state.menuTop} }
           onClick={this.selectCB}
         >
-          { this.props.children }
+          {this.props.children}
         </ul>
       );
     }
 
     return (
       <div ref="wrapperEl" className={dropdownClass}>
-        { buttonEl }
-        { menuEl }
+        {buttonEl}
+        {menuEl}
       </div>
     );
   }
@@ -192,7 +192,7 @@ class DropdownItem extends React.Component {
     return (
       <li>
         <a href={this.props.link} onClick={this.onClickCB}>
-          { this.props.children }
+          {this.props.children}
         </a>
       </li>
     );

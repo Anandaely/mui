@@ -29,7 +29,7 @@ class Form extends React.Component {
 
     return (
       <form className={cls}>
-        { this.props.children }
+        {this.props.children}
       </form>
     );
   }

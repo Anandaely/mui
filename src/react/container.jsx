@@ -29,7 +29,7 @@ class Container extends React.Component {
 
     return (
       <div className={cls}>
-        { this.props.children }
+        {this.props.children}
       </div>
     );
   }

@@ -175,9 +175,9 @@ class Select extends React.Component {
           onClick={this.onClickFn}
           onFocus={this.onInnerFocusFn}
         >
-          { this.props.children }
+          {this.props.children}
         </select>
-        { menuElem }
+        {menuElem}
       </div>
     );
   }
@@ -202,7 +202,7 @@ class SelectItem extends React.Component {
   render() {
     return (
       <option value={this.props.value}>
-        { this.props.label }
+        {this.props.label}
       </option>
     );
   }
@@ -348,14 +348,14 @@ class Menu extends React.Component {
           className={cls}
           onClick={this.onClick.bind(this, i)}
         >
-          { optionList[i].textContent }
+          {optionList[i].textContent}
         </div>
       );
     }
 
     return (
       <div ref="wrapperEl" className="mui-select__menu">
-        { menuItems }  
+        {menuItems}
       </div>
     );
   }

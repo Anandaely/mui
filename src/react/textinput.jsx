@@ -146,7 +146,7 @@ class Label extends React.Component {
         style={this.state.style}
         onClick={this.props.onClick}
       >
-        { this.props.text }
+        {this.props.text}
       </label>
     );
   }
@@ -202,7 +202,7 @@ class TextField extends React.Component {
     return (
       <div className={cls}>
         <Input ref="inputEl" { ...this.props } />
-        { labelEl }
+        {labelEl}
       </div>
     );
   }
@@ -223,7 +223,7 @@ class TextInput extends React.Component {
   }
 
   render() {
-    return (<TextField { ...this.props } />);
+    return (<TextField {...this.props} />);
   }
 }
 
@@ -243,7 +243,7 @@ class TextareaInput extends React.Component {
   }
 
   render() {
-    return (<TextField { ...this.props } />);
+    return (<TextField {...this.props} />);
   }
 }
 

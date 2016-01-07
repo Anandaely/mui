@@ -103,7 +103,7 @@ class Button extends React.Component {
         onClick={this.onClick.bind(this)}
         onMouseDown={this.onMouseDown.bind(this)}
       >
-        { this.props.children }
+        {this.props.children}
         { 
           Object.keys(ripples).map((k, i) => {
             let v = ripples[k];

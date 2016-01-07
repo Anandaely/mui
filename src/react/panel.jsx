@@ -16,7 +16,7 @@ class Panel extends React.Component {
   render() {
     return (
       <div className='mui-panel'>
-        { this.props.children }
+        {this.props.children}
       </div>
     );
   }

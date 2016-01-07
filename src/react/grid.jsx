@@ -21,7 +21,7 @@ class Row extends React.Component {
   render() {
     return (
       <div className="mui-row">
-        { this.props.children }
+        {this.props.children}
       </div>
     );
   }
@@ -73,7 +73,7 @@ class Col extends React.Component {
 
     return (
       <div className={cls}>
-        { this.props.children}
+        {this.props.children}
       </div>
     );
   }
