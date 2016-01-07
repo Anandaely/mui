@@ -78,28 +78,28 @@ class Input extends React.Component {
       inputEl = (
         <textarea
           ref="inputEl"
-          className={ cls }
-          rows={ this.props.rows }
-          placeholder={ this.props.hint }
-          defaultValue={ this.props.value }
-          autoFocus={ this.props.isAutofocus }
-          onChange={ this.onChangeFn }
-          onFocus={ this.onFocusFn }
-          required={ this.props.isRequired }
+          className={cls}
+          rows={this.props.rows}
+          placeholder={this.props.hint}
+          defaultValue={this.props.value}
+          autoFocus={this.props.isAutofocus}
+          onChange={this.onChangeFn}
+          onFocus={this.onFocusFn}
+          required={this.props.isRequired}
         />
       );
     } else {
       inputEl = (
         <input
           ref="inputEl"
-          className={ cls }
-          type={ this.props.type }
-          defaultValue={ this.state.value }
-          placeholder={ this.props.hint }
-          autoFocus={ this.props.autofocus }
-          onChange={ this.onChangeFn }
-          onFocus={ this.onFocusFn }
-          required={ this.props.isRequired }
+          className={cls}
+          type={this.props.type}
+          defaultValue={this.state.value}
+          placeholder={this.props.hint}
+          autoFocus={this.props.autofocus}
+          onChange={this.onChangeFn}
+          onFocus={this.onFocusFn}
+          required={this.props.isRequired}
         />
       );
     }
@@ -143,8 +143,8 @@ class Label extends React.Component {
   render() {
     return (
       <label
-        style={ this.state.style }
-        onClick={ this.props.onClick }
+        style={this.state.style}
+        onClick={this.props.onClick}
       >
         { this.props.text }
       </label>
@@ -189,8 +189,8 @@ class TextField extends React.Component {
     if (this.props.label.length) {
       labelEl = (
         <Label
-          text={ this.props.label }
-          onClick={ this.onClickCB }
+          text={this.props.label}
+          onClick={this.onClickCB}
         />
       );
     }
@@ -200,7 +200,7 @@ class TextField extends React.Component {
     cls = util.classNames(cls);
 
     return (
-      <div className={ cls }>
+      <div className={cls}>
         <Input ref="inputEl" { ...this.props } />
         { labelEl }
       </div>

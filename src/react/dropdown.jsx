@@ -122,11 +122,11 @@ class Dropdown extends React.Component {
     buttonEl = (
       <Button
         ref="button"
-        onClick={ this.onClickCB }
-        color={ this.props.color }
-        variant={ this.props.variant }
-        size={ this.props.size }
-        isDisabled={ this.props.isDisabled }
+        onClick={this.onClickCB}
+        color={this.props.color}
+        variant={this.props.variant}
+        size={this.props.size}
+        isDisabled={this.props.isDisabled}
       >
         { this.props.label }
         <Caret />
@@ -144,9 +144,9 @@ class Dropdown extends React.Component {
       menuEl = (
         <ul
           ref="menuEl"
-          className={ cs }
-          style={ {top: this.state.menuTop } }
-          onClick={ this.selectCB }
+          className={cs}
+          style={{top: this.state.menuTop} }
+          onClick={this.selectCB}
         >
           { this.props.children }
         </ul>
@@ -154,7 +154,7 @@ class Dropdown extends React.Component {
     }
 
     return (
-      <div ref="wrapperEl" className={ dropdownClass }>
+      <div ref="wrapperEl" className={dropdownClass}>
         { buttonEl }
         { menuEl }
       </div>
@@ -191,7 +191,7 @@ class DropdownItem extends React.Component {
   render() {
     return (
       <li>
-        <a href={ this.props.link } onClick={ this.onClickCB }>
+        <a href={this.props.link} onClick={this.onClickCB}>
           { this.props.children }
         </a>
       </li>

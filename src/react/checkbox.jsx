@@ -34,8 +34,8 @@ class Checkbox extends React.Component {
         <label>
           <input
               type="checkbox"
-              value={ this.props.value }
-              disabled={ this.props.isDisabled }
+              value={this.props.value}
+              disabled={this.props.isDisabled}
           />
           { this.props.label }
         </label>

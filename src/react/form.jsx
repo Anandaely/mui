@@ -28,7 +28,7 @@ class Form extends React.Component {
     if (this.props.isInline) cls = 'mui-form--inline';
 
     return (
-      <form className={ cls }>
+      <form className={cls}>
         { this.props.children }
       </form>
     );

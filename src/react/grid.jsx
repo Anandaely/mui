@@ -72,7 +72,7 @@ class Col extends React.Component {
     cls = util.classNames(cls);
 
     return (
-      <div className={ cls }>
+      <div className={cls}>
         { this.props.children}
       </div>
     );

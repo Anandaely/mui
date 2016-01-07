@@ -150,9 +150,9 @@ class Select extends React.Component {
     if (this.state.showMenu) {
       menuElem = (
         <Menu
-          selectEl={ this.refs.selectEl }
-          wrapperEl={ this.refs.wrapperEl }
-          teardownFn={ this.hideMenuFn }
+          selectEl={this.refs.selectEl}
+          wrapperEl={this.refs.wrapperEl}
+          teardownFn={this.hideMenuFn}
         />
       );
     }
@@ -161,19 +161,19 @@ class Select extends React.Component {
       <div
         ref="wrapperEl"
         className="mui-select"
-        onFocus={ this.onOuterFocusFn }
-        onBlur={ this.onOuterBlurFn }
+        onFocus={this.onOuterFocusFn}
+        onBlur={this.onOuterBlurFn}
       >
         <select
           ref="selectEl"
-          name={ this.props.name }
-          autofocus={ this.props.isAutofocus }
-          disabled={ this.props.isDisabled }
-          multiple={ this.props.isMultiple }
-          required={ this.props.isRequired }
-          onMouseDown={ this.onMouseDownFn }
-          onClick={ this.onClickFn }
-          onFocus={ this.onInnerFocusFn }
+          name={this.props.name}
+          autofocus={this.props.isAutofocus}
+          disabled={this.props.isDisabled}
+          multiple={this.props.isMultiple}
+          required={this.props.isRequired}
+          onMouseDown={this.onMouseDownFn}
+          onClick={this.onClickFn}
+          onFocus={this.onInnerFocusFn}
         >
           { this.props.children }
         </select>
@@ -201,7 +201,7 @@ class SelectItem extends React.Component {
 
   render() {
     return (
-      <option value={ this.props.value }>
+      <option value={this.props.value}>
         { this.props.label }
       </option>
     );
@@ -344,9 +344,9 @@ class Menu extends React.Component {
 
       menuItems.push(
         <div
-          key={ i }
-          className={ cls }
-          onClick={ this.onClick.bind(this, i) }
+          key={i}
+          className={cls}
+          onClick={this.onClick.bind(this, i)}
         >
           { optionList[i].textContent }
         </div>

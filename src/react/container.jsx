@@ -28,7 +28,7 @@ class Container extends React.Component {
     if (this.props.isFluid) cls += '-fluid';
 
     return (
-      <div className={ cls }>
+      <div className={cls}>
         { this.props.children }
       </div>
     );

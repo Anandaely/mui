@@ -38,10 +38,10 @@ class Radio extends React.Component {
         <label>
           <input
               type="radio"
-              name={ this.props.name }
-              value={ this.props.value }
-              defaultChecked={ this.props.isChecked }
-              disabled={ this.props.isDisabled }
+              name={this.props.name}
+              value={this.props.value}
+              defaultChecked={this.props.isChecked}
+              disabled={this.props.isDisabled}
           />
           { this.props.label }
         </label>

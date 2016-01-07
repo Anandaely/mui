@@ -98,10 +98,10 @@ class Button extends React.Component {
     return (
       <button
         ref="buttonEl"
-        className={ cls }
-        disabled={ this.props.isDisabled }
-        onClick={ this.onClick.bind(this) }
-        onMouseDown={ this.onMouseDown.bind(this) }
+        className={cls}
+        disabled={this.props.isDisabled}
+        onClick={this.onClick.bind(this)}
+        onMouseDown={this.onMouseDown.bind(this)}
       >
         { this.props.children }
         { 
@@ -110,11 +110,11 @@ class Button extends React.Component {
 
             return (
               <Ripple
-                key={ k }
-                xPos={ v.xPos }
-                yPos={ v.yPos }
-                diameter={ v.diameter }
-                onTeardown={ v.teardownFn }
+                key={k}
+                xPos={v.xPos}
+                yPos={v.yPos}
+                diameter={v.diameter}
+                onTeardown={v.teardownFn}
               />
             );
           })
@@ -163,7 +163,7 @@ class Ripple extends React.Component {
       left: this.props.xPos - radius || 0
     };
 
-    return <div className={ rippleClass } style={ style } />;
+    return <div className={rippleClass} style={style} />;
   }
 }
 
