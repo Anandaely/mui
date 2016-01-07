@@ -21,7 +21,8 @@
     "url": "https://github.com/muicss/mui.git"
   },
   "devDependencies": {},
-  "dependencies": {
-    "react": "^0.14.5"
-  }
+  "peerDependencies": {
+    "react": "^0.14.3"
+  },
+  "dependencies": {}
 }
